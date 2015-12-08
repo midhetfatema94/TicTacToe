@@ -9,9 +9,9 @@ def game():
         if(i%2==0):
             player_move(tictactoe, turn[0])
         else:
-            print("\nComputer's Move: "+str(i+1))
             position = computer_move(tictactoe, turn[1], turn[0]);
-            print('\n The position is: '+str(position));
+            print("\nComputer's Move: "+str(position+1));
+            #print('\n The position is: '+str(position));
             tictactoe[position] = turn[1]
 
         draw_grid(tictactoe);
@@ -44,6 +44,7 @@ def player_move(ttt, char):
                 
 def computer_move(ttt, mac_char, player_char):
 
+    mwm = []
     mwm = calculate_move(ttt, mac_char);
     pwm = make_move(ttt, player_char);
     if(mwm != []):
@@ -51,7 +52,7 @@ def computer_move(ttt, mac_char, player_char):
     else:
         position = pwm;
 
-    print('\nPosition: '+str(position));
+    #print('\nPosition: '+str(position));
     return position;
 
 def calculate_move(ttt, char):
@@ -116,14 +117,16 @@ def calculate_move(ttt, char):
     if ttt[4]==ttt[6]==char:
         pos.append(2);
 
-        print('\nPoses: '+str(pos));
-        for i in range(len(pos)):
+    l = len(pos);
+    if(pos):
+        #print('\nPoses: '+str(pos));
+        for i in range(l):
             if ttt[pos[i]] == ' ':
                 array.append(pos[i])
 
         position = random.choice(array);
 
-    print('\nMachine winning move: '+str(position));
+    #print('\nMachine winning move: '+str(position));
     return position;
 
 
@@ -138,7 +141,7 @@ def make_move(ttt, player_char):
         positions = get_free_moves(ttt);
         position = random.choice(positions);
 
-    print("\nPlayer's winning move: "+str(position));
+    #print("\nPlayer's winning move: "+str(position));
     return position;
 
     
