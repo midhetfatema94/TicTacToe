@@ -1,196 +1,115 @@
-import random;
+def display_board(board):
+    blankBoard="""
+___________________
+|     |     |     |
+|  7  |  8  |  9  |
+|     |     |     |
+|-----------------|
+|     |     |     |
+|  4  |  5  |  6  |
+|     |     |     |
+|-----------------|
+|     |     |     |
+|  1  |  2  |  3  |
+|     |     |     |
+|-----------------|
+"""
 
-def game():
-    tictactoe = [' ',' ',' ',' ',' ',' ',' ',' ',' '];
-
-    turn = who_goes_first();
-
-    for i in range(0,9):
-        if(i%2==0):
-            player_move(tictactoe, turn[0])
+    for i in range(1,10):
+        if (board[i] == 'O' or board[i] == 'X'):
+            blankBoard = blankBoard.replace(str(i), board[i])
         else:
-            position = computer_move(tictactoe, turn[1], turn[0]);
-            print("\nComputer's Move: "+str(position+1));
-            #print('\n The position is: '+str(position));
-            tictactoe[position] = turn[1]
+            blankBoard = blankBoard.replace(str(i), ' ')
+    print(blankBoard)
 
-        draw_grid(tictactoe);
-        if(i>=2):
-            winner = is_winner(tictactoe);
-            if(winner == 1):
-                choice = raw_input('Do you want to play another game? ');
-                choice.lower();
-                if(choice == 'yes'):
-                    game();
-                else:
-                    break
+def player_input():
+    player1 = input("Please pick a marker 'X' or 'O' ")
+    while True:
+        if player1.upper() == 'X':
+            player2='O'
+            print("You've choosen " + player1 + ". Player 2 will be " + player2)
+            return player1.upper(),player2
+        elif player1.upper() == 'O':
+            player2='X'
+            print("You've choosen " + player1 + ". Player 2 will be " + player2)
+            return player1.upper(),player2
+        else:
+            player1 = input("Please pick a marker 'X' or 'O' ")
 
-def draw_grid(tictactoe):
+def place_marker(board, marker, position):
+    board[position] = marker
+    return board
 
-    print('\n'+str(tictactoe[0])+'|'+ str(tictactoe[1])+'|'+ str(tictactoe[2]))
-    print('_|_|_')
-    print(str(tictactoe[3])+'|'+ str(tictactoe[4])+'|'+ str(tictactoe[5]))
-    print('_|_|_')
-    print(str(tictactoe[6])+'|'+ str(tictactoe[7])+'|'+ str(tictactoe[8]))
+def space_check(board, position):
+    return board[position] == '#'
 
-def player_move(ttt, char):
-    
-    position = input('\nPosition you want to play in: ');
-    if ttt[position-1] == ' ':
-        ttt[position-1] = char;
-    else:
-        print('Position is already occupied!');
-        player_move(ttt, char);
-                
-def computer_move(ttt, mac_char, player_char):
+def full_board_check(board):
+    return len([x for x in board if x == '#']) == 1
 
-    mwm = []
-    mwm = calculate_move(ttt, mac_char);
-    pwm = make_move(ttt, player_char);
-    if(mwm != []):
-        position = mwm;
-    else:
-        position = pwm;
+def win_check(board, mark):
+    if board[1] == board[2] == board[3] == mark:
+        return True
+    if board[4] == board[5] == board[6] == mark:
+        return True
+    if board[7] == board[8] == board[9] == mark:
+        return True
+    if board[1] == board[4] == board[7] == mark:
+        return True
+    if board[2] == board[5] == board[8] == mark:
+        return True
+    if board[3] == board[6] == board[9] == mark:
+        return True
+    if board[1] == board[5] == board[9] == mark:
+        return True
+    if board[3] == board[5] == board[7] == mark:
+        return True
+    return False
 
-    #print('\nPosition: '+str(position));
-    return position;
+def player_choice(board):
+    choice = input("Please select an empty space between 1 and 9 : ")
+    while not space_check(board, int(choice)):
+        choice = input("This space isn't free. Please choose between 1 and 9 : ")
+    return choice
 
-def calculate_move(ttt, char):
+def replay():
+    playAgain = input("Do you want to play again (y/n) ? ")
+    if playAgain.lower() == 'y':
+        return True
+    if playAgain.lower() == 'n':
+        return False
 
-    position = [];
-    pos = [];
-    array = [];
-
-    if ttt[0]==ttt[2]==char:
-        pos.append(1);
-    if ttt[0]==ttt[1]==char:
-        pos.append(2);
-    if ttt[1]==ttt[2]==char:
-        pos.append(0);
-
-    if ttt[3]==ttt[4]==char:
-        pos.append(5);
-    if ttt[3]==ttt[5]==char:
-        pos.append(4);
-    if ttt[4]==ttt[5]==char:
-        pos.append(3);
-
-    if ttt[6]==ttt[7]==char:
-        pos.append(8);
-    if ttt[7]==ttt[8]==char:
-        pos.append(6);
-    if ttt[6]==ttt[8]==char:
-        pos.append(7);
-
-    if ttt[0]==ttt[3]==char:
-        pos.append(6);
-    if ttt[0]==ttt[6]==char:
-        pos.append(3);
-    if ttt[3]==ttt[6]==char:
-        pos.append(0);
-
-    if ttt[1]==ttt[4]==char:
-        pos.append(7);
-    if ttt[1]==ttt[7]==char:
-        pos.append(4);
-    if ttt[4]==ttt[7]==char:
-        pos.append(1);
-
-    if ttt[2]==ttt[5]==char:
-        pos.append(8);
-    if ttt[2]==ttt[8]==char:
-        pos.append(5);
-    if ttt[5]==ttt[8]==char:
-        pos.append(2);
-
-    if ttt[0]==ttt[4]==char:
-        pos.append(8);
-    if ttt[0]==ttt[8]==char:
-        pos.append(4);
-    if ttt[4]==ttt[8]==char:
-        pos.append(0);
-
-    if ttt[2]==ttt[4]==char:
-        pos.append(6);
-    if ttt[2]==ttt[6]==char:
-        pos.append(4);
-    if ttt[4]==ttt[6]==char:
-        pos.append(2);
-
-    l = len(pos);
-    if(pos):
-        #print('\nPoses: '+str(pos));
-        for i in range(l):
-            if ttt[pos[i]] == ' ':
-                array.append(pos[i])
-
-        position = random.choice(array);
-
-    #print('\nMachine winning move: '+str(position));
-    return position;
-
-
-def make_move(ttt, player_char):
-    pos = [];
-    position = [];
-    pos = calculate_move(ttt, player_char);
-
-    if(pos != []):
-        position = pos;
-    else:
-        positions = get_free_moves(ttt);
-        position = random.choice(positions);
-
-    #print("\nPlayer's winning move: "+str(position));
-    return position;
-
-    
-def get_free_moves(ttt):
-
-    array = [];
-    for i in range(0,9):
-        if(ttt[i]==' '):
-            array.append(i);
-    return array;
-
-def who_goes_first():
-
-    status = random.randint(0,1);
-
-    if(status == 1):
-        one = 'X'
-        two = 'O'
-
-    else:
-        one = 'O'
-        two = 'X'
-
-    return one, two;
-
-def is_winner(ttt):
-    if((ttt[0]==ttt[1]==ttt[2]=='X') or
-       (ttt[3]==ttt[4]==ttt[5]=='X') or
-       (ttt[6]==ttt[7]==ttt[8]=='X') or
-       (ttt[0]==ttt[3]==ttt[6]=='X') or
-       (ttt[1]==ttt[4]==ttt[7]=='X') or
-       (ttt[2]==ttt[5]==ttt[8]=='X') or
-       (ttt[0]==ttt[4]==ttt[8]=='X') or
-       (ttt[2]==ttt[4]==ttt[6]=='X')):
-        print('X is the winner!');
-        return 1
-
-
-    elif ((ttt[0]==ttt[1]==ttt[2]=='O') or
-       (ttt[3]==ttt[4]==ttt[5]=='O') or
-       (ttt[6]==ttt[7]==ttt[8]=='O') or
-       (ttt[0]==ttt[3]==ttt[6]=='O') or
-       (ttt[1]==ttt[4]==ttt[7]=='O') or
-       (ttt[2]==ttt[5]==ttt[8]=='O') or
-       (ttt[0]==ttt[4]==ttt[8]=='O') or
-       (ttt[2]==ttt[4]==ttt[6]=='O')):
-        print('O is the winner!');
-        return 1
-
-    return 0
-
-game()
+if __name__ == "__main__":
+    print('Welcome to Tic Tac Toe!')
+    i = 1
+    # Choose your side
+    players=player_input()
+    # Empty board init
+    board = ['#'] * 10
+    while True:
+        # Set the game up here
+        game_on=full_board_check(board)
+        while not game_on:
+            # Player to choose where to put the mark
+            position = player_choice(board)
+            # Who's playin ?
+            if i % 2 == 0:
+                marker = players[1]
+            else:
+                marker = players[0]
+            # Play !
+            place_marker(board, marker, int(position))
+            # Check the board
+            display_board(board)
+            i += 1
+            if win_check(board, marker):
+                print("You won !")
+                break
+            game_on=full_board_check(board)
+        if not replay():
+            break
+        else:
+            i = 1
+            # Choose your side
+            players=player_input()
+            # Empty board init
+            board = ['#'] * 10

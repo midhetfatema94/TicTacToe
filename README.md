@@ -1,2 +1,8 @@
-# Mini Project in Python
-This project is a game of tictactoe in python. It was created to learn the basic foundations of python. The computer plays with a player based on its artificial intelligence.   
+# Mini Terminal Game
+Play TicTacToe in the Python terminal.
+
+### Installation
+Download .zip file or clone git repository
+
+### Run
+Install Python extensions and Run it in an IDE of your choice
